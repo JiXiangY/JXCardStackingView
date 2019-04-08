@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol JXCardViewProtcol <NSObject>
-- (void)jx_CreateCardViewWithData:(id)Data
+- (void)jx_CreateCardViewWithData:(id)Data;
 @end
 
 NS_ASSUME_NONNULL_END
