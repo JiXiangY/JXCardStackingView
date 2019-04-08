@@ -34,9 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) CGFloat cardCornerRadius;                            /// 圆角
 @property (nonatomic) CGFloat offsetX;                                     /// 展示卡片的横坐标偏移量
 @property (nonatomic) CGFloat offsetY;                                     /// 展示卡片的纵坐标偏移量
-@property (nonatomic) CGRect  topViewFrame;                                /// 顶图frame
+@property (nonatomic) CGRect  topViewFrame;                                /// 顶图frame(标准图的大小位置)
 @property (nonatomic,weak) id<JXYCardStackViewDelegate> delegate;       /// 点击代理
-@property (nonatomic,weak) id<JXYCardStackViewDataSource> dataSource;   /// 数据代理
+@property (nonatomic,weak) id<JXYCardStackViewDataSource> dataSource;   /// 数据代理 展示卡片上的view
 /**
  初始化方法
  @param frame 位置
