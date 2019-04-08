@@ -399,6 +399,10 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
 // 是否允许触发手势
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    //解决奇怪的手势触发崩溃问题
+    if(![gestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]){
+        return YES;
+    }
     CGPoint translation = [(UIPanGestureRecognizer*)gestureRecognizer translationInView:self];
     if(fabs(translation.y) > fabs(translation.x)){
         return NO;//竖向滑动不处理
