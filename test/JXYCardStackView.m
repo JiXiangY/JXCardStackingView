@@ -20,6 +20,9 @@
 @property (nonatomic, strong) UIPanGestureRecognizer  * cardPan;            ///拖动手势
 @property (nonatomic, strong) NSMutableArray <JXYCardModel * > * cardModels;///卡片属性数组
 @property (nonatomic, strong) NSMutableArray <JXYBaseCardView * > * cards;  ///卡片数组
+@property (nonatomic, assign) BOOL isTouch;///是否有触摸
+@property (nonatomic, assign) BOOL isScroll;///是否正在滑动中
+//@property (nonatomic, assign) BOOL isScroll;///是否正在滑动中
 @end
 
 @implementation JXYCardStackView
@@ -33,8 +36,16 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max);
         self.backgroundColor = [UIColor clearColor];
         _bToSScale = 0.05;
         _sToBScale = 1/(1-_bToSScale) - 1;
+        self.isTouch = NO;
     }
     return self;
+}
+
+- (void)nextCard
+{
+    if (self.isTouch == NO) {
+         [self panGestureToLiftStateEndedWithIsRemove:YES withTime:1];
+    }
 }
 #pragma mark - 创建视图
 
@@ -134,10 +145,24 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
     }
     return currentIndex;
 }
+- (void)showNextCard
+{
+//    if (_isScroll == NO) {
+        [self panGestureToLiftStateEndedWithIsRemove:YES withTime:0.2];
+//    }
+    
+}
 
+- (void)showBeforeCard
+{
+//    if (_isScroll == NO) {
+        [self panGestureToRightStateEndedWithIsRemove:YES withTime:0.2];
+//    }
+}
 #pragma mark - 拖动 + 动画
 - (void)panHandle:(UIPanGestureRecognizer *)pan
 {
+    self.isTouch = YES;
     //速度
     CGPoint velocity = [pan velocityInView:[UIApplication sharedApplication].keyWindow];
     //手势当前坐标
@@ -258,6 +283,7 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
 ///结束 从左向右
 - (void)panGestureToRightStateEndedWithIsRemove:(BOOL)isRemove withTime:(NSTimeInterval)time
 {
+    _isScroll = YES;
     if (isRemove == YES) {
         [[self.cards lastObject]removeFromSuperview];
         [self.cards removeLastObject];//把数组中的最后的view先移除
@@ -265,6 +291,7 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
     }
     //停用手势
     [self removeGestureRecognizer:self.cardPan];
+    self.userInteractionEnabled = NO;
     //动画
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:time animations:^{
@@ -276,8 +303,11 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
             otherView.transform = CGAffineTransformMakeScale(model.currentScale,model.currentScale);
         }
     }completion:^(BOOL finished) {
+        _isScroll = NO;
         //启用手势
         [self addGestureRecognizer:self.cardPan];
+        self.userInteractionEnabled = YES;
+        self.isTouch= NO;
         //校对位置等
         for (int i = 0; i < self.cards.count ; i++) {
             JXYCardModel *model = weakSelf.cardModels[i];
@@ -294,6 +324,7 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
 ///结束 从右向左
 - (void)panGestureToLiftStateEndedWithIsRemove:(BOOL)isRemove withTime:(NSTimeInterval)time
 {
+    _isScroll = YES;
     if (isRemove == YES) {
         JXYBaseCardView * hiddenView = [self.cards firstObject];
         [hiddenView removeFromSuperview];
@@ -301,6 +332,7 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
     }
     //停用手势
     [self removeGestureRecognizer:self.cardPan];
+    self.userInteractionEnabled = NO;
     //动画
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:time animations:^{
@@ -312,8 +344,11 @@ NSInteger getCurrentIndex(NSInteger currentIndex,NSInteger max)
             otherView.transform = CGAffineTransformMakeScale(model.currentScale,model.currentScale);
         }
     }completion:^(BOOL finished) {
+        _isScroll = NO;
         //启用手势
         [self addGestureRecognizer:self.cardPan];
+        self.userInteractionEnabled = YES;
+        self.isTouch = NO;
         //校对位置等
         for (int i = 0; i < self.cards.count ; i++) {
             JXYCardModel *model = weakSelf.cardModels[i];

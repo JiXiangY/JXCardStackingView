@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) CGRect  topViewFrame;                                /// 顶图frame(标准图的大小位置)
 @property (nonatomic,weak) id<JXYCardStackViewDelegate> delegate;       /// 点击代理
 @property (nonatomic,weak) id<JXYCardStackViewDataSource> dataSource;   /// 数据代理 展示卡片上的view
+
+- (void)nextCard;
 /**
  初始化方法
  @param frame 位置
@@ -49,6 +51,11 @@ NS_ASSUME_NONNULL_BEGIN
  @param showCardsNumber 显示个数
  */
 - (void)loadCardViewWithDataCount:(NSInteger)dataCount showCardsNumber:(NSInteger)showCardsNumber;
+
+
+- (void)showNextCard;
+
+- (void)showBeforeCard;
 
 @end
 
